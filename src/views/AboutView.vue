@@ -1,4 +1,5 @@
 <template>
+  {{ aluno }}
   <v-form ref="form" @submit.prevent="handleSubmit">
     <v-text-field 
       variant="outlined" 
@@ -28,27 +29,70 @@
      />
 
     <v-select 
-      :items="items" 
-      v-model="aluno.curso" 
+      :items="diasLista" 
+      v-model="aluno.day" 
       variant="outlined" 
-      label="Curso"
-      placeholder="Selecione o curso">
+      label="Selecione o dia"
+      placeholder="Selecione o dia">
+    </v-select>
+    <v-select 
+      :items="exercises" 
+      v-model="aluno.exercise_id" 
+      variant="outlined" 
+      item-title="description"
+      item-value="id"
+      label="Selecione o exercício"
+      placeholder="Selecione o exercício">
     </v-select>
     <v-btn type="submit">Cadastrar</v-btn>
   </v-form>
 </template>
 
 <script>
+import axios from "axios"
 export default {
   data() {
     return {
       aluno: {
-        nome: "",
-        idade: null,
-        email: "",
-        curso: ""
+        student_id: 0,
+        exercise_id: 0,
+        repetitions: 0,
+        weight: 0,
+        break_time: 0,
+        observations: "",
+        day: "segunda"
       },
-      items: ['HTML', 'CSS', 'JAVASCRIPT', 'VUEJS', 'PHP']
+      diasLista: [
+        {
+          title: 'Segunda-feira',
+          value: 'segunda'
+        },
+        {
+          title: 'Terça-feira',
+          value: 'terca'
+        },
+        {
+          title: 'Quarta-feira',
+          value: 'quarta'
+        },
+        {
+          title: 'Quinta-feira',
+          value: 'quinta'
+        },
+        {
+          title: 'Sexta-feira',
+          value: 'sexta'
+        },
+        {
+          title: 'Sábado',
+          value: 'sabado'
+        },
+        {
+          title: 'Domingo',
+          value: 'domingo'
+        }
+      ],
+      exercises: []
     }
   },
   methods: {
@@ -63,6 +107,10 @@ export default {
       const result = confirm("Aluno cadastrado com sucesso! Deseja ir para o dashboard?")
       this.$refs.form.reset()
     }
+  },
+  mounted(){
+    axios.get('http://localhost:3000/exercises')
+    .then(res => this.exercises = res.data)
   }
 }
 </script>
