@@ -1,5 +1,5 @@
 <template>
-  {{ aluno }}
+  {{ date }}
   <v-form ref="form" @submit.prevent="handleSubmit">
     <v-text-field 
       variant="outlined" 
@@ -28,6 +28,20 @@
      placeholder="Digite o email" 
      />
 
+     <img src="./sala-de-aula.png" alt="Imagem representando uma sala de aula">
+    
+     <label>Selecione a data de nascimento</label>
+    <VueDatePicker 
+      v-model="date" 
+      :max-date="new Date()" 
+      locale="pt-BR" 
+      cancelText="cancelar" 
+      selectText="Selecionar"
+      label="Selecione a data"
+      :format="format"
+      :enable-time-picker="false"
+    />
+
     <v-select 
       :items="diasLista" 
       v-model="aluno.day" 
@@ -50,9 +64,11 @@
 
 <script>
 import axios from "axios"
+import moment from "moment"
 export default {
   data() {
     return {
+      date: "",
       aluno: {
         student_id: 0,
         exercise_id: 0,
@@ -95,7 +111,20 @@ export default {
       exercises: []
     }
   },
+  watch: {
+    date: (newValue) => {
+      let dataFormatada = moment(newValue).format("DD/MM/YYYY")
+      return dataFormatada
+    }
+  },
   methods: {
+    format(date) {
+      const day = date.getDate();
+      const month = date.getMonth() + 1;
+      const year = date.getFullYear();
+
+      return `${day}/${month}/${year}`;
+    },
     async handleSubmit(){
       const {valid} = await this.$refs.form.validate()
 
@@ -104,12 +133,14 @@ export default {
         return
       }
 
+      let dataFormatada = moment(this.data).format("DD/MM/YYYY")
+
       const result = confirm("Aluno cadastrado com sucesso! Deseja ir para o dashboard?")
       this.$refs.form.reset()
     }
   },
   mounted(){
-    axios.get('http://localhost:3000/exercises')
+    axios.get(`${import.meta.env.VITE_URL_API_BASE}/exercises`)
     .then(res => this.exercises = res.data)
   }
 }

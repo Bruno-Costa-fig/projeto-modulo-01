@@ -8,7 +8,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@vuepic/vue-datepicker": "^6.0.2",
     "axios": "^1.5.0",
+    "moment": "^2.29.4",
     "vee-validate": "^4.11.3",
     "vue": "^3.3.4",
     "vue-router": "^4.2.4",
